@@ -20,7 +20,7 @@ public class DBVerbindung {
         passwort = passwortH;
     }
 
-    public void erstelleVerbindung(){
+    public void open(){
         try{
             //lädt datenbanktreiber
             Class.forName(treiber);
@@ -37,7 +37,7 @@ public class DBVerbindung {
         }
     }
 
-    public void schließeVerbindung(){
+    public void close(){
         try{
             stmt.close();
             con.close();
@@ -49,8 +49,8 @@ public class DBVerbindung {
 
     public static void main(){
         DBVerbindung dBVerb1 = new DBVerbindung("tuivents", "root", "M2A2015");
-        dBVerb1.erstelleVerbindung();
-        dBVerb1.schließeVerbindung();
+        dBVerb1.open();
+        dBVerb1.close();
     }
 }
 
