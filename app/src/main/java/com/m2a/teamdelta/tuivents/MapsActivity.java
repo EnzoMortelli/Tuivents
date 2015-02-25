@@ -1,7 +1,9 @@
 package com.m2a.teamdelta.tuivents;
 
+import android.app.AlertDialog;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.content.DialogInterface;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
@@ -10,15 +12,20 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 
 public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    protected Calendar date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        date = new GregorianCalendar();
         setUpMapIfNeeded();
     }
 
@@ -26,6 +33,28 @@ public class MapsActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+    }
+
+    /*
+     * Secure shutdown.
+     */
+    @Override
+    public void onBackPressed(){
+        //super.onBackPressed();
+        AlertDialog.Builder back = new AlertDialog.Builder(this);
+        back.setTitle("Beenden")
+            .setMessage("Möchten Sie die App wirklich schließen?")
+            .setPositiveButton("JA", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    finish();
+                }
+            })
+            .setNegativeButton("NEIN", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    // App not yet closed
+                }
+            });
+        back.show();
     }
 
     /**
