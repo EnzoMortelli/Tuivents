@@ -19,13 +19,13 @@ import java.util.GregorianCalendar;
 public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    protected Calendar date;
+    protected Calendar date; // Calendar object that can be used to set dates to search for events on.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        date = new GregorianCalendar();
+        date = new GregorianCalendar(); //initialize Calendar with current date and time.
         setUpMapIfNeeded();
     }
 
