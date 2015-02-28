@@ -1,10 +1,13 @@
 package com.m2a.teamdelta.tuivents;
 
 import android.app.AlertDialog;
+import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.content.DialogInterface;
+import android.util.Log;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -14,18 +17,20 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Set;
 
 
 public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    protected Calendar date; // Calendar object that can be used to set dates to search for events on.
+    public Calendar date = new GregorianCalendar(); //initialize Calendar with current date and time. The Calendar object can be used to set dates to search for events on.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.activity_maps);
-        date = new GregorianCalendar(); //initialize Calendar with current date and time.
         setUpMapIfNeeded();
     }
 
@@ -92,7 +97,15 @@ public class MapsActivity extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
-    }
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(50.683032, 10.936282)));
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(15.0f));
 
+        DBVerbindung db = new DBVerbindung("tuivents", "root", "M2A2015");
+        db.open();
+        Set<Integer> events = db.getEventsByDate(date.get(Calendar.YEAR), date.get(Calendar.MONTH)+1, date.get(Calendar.DAY_OF_MONTH));
+        for(Integer ID : events){
+            mMap.addMarker(new MarkerOptions().position(db.getEventGeoLoc(ID)).title(db.getEventName(ID)));
+        }
+        db.close();
+    }
 }

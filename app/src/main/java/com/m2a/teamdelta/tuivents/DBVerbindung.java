@@ -1,5 +1,9 @@
 package com.m2a.teamdelta.tuivents;
 
+import android.util.Log;
+
+import com.google.android.gms.maps.model.LatLng;
+
 import java.sql.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,7 +13,7 @@ import java.util.Set;
 public class DBVerbindung {
     private final String treiber = "com.mysql.jdbc.Driver";
 
-    private String dBase = "jdbc:mysql://localhost/";
+    private String dBase = "jdbc:mysql://10.0.2.2/";
     private String benutzer;
     private String passwort;
 
@@ -32,10 +36,10 @@ public class DBVerbindung {
             stmt = con.createStatement();
         }
         catch (ClassNotFoundException cnfe){
-            System.out.println(cnfe.toString());
+            Log.e("Driver failure", cnfe.toString());
         }
         catch (SQLException sqle){
-            System.out.println(sqle.toString());
+            Log.e("SQL failure", sqle.toString());
         }
     }
 
@@ -45,7 +49,7 @@ public class DBVerbindung {
             con.close();
         }
         catch (SQLException sqle){
-            System.out.println(sqle.toString());
+            Log.e("SQL failure", sqle.toString());
         }
     }
 
@@ -62,7 +66,7 @@ public class DBVerbindung {
                 name = tmp.getString("NAME");
             }
         } catch (SQLException sqle) {
-            System.out.println(sqle.toString());
+            Log.e("SQL failure", sqle.toString());
         }
         return name;
     }
@@ -80,7 +84,7 @@ public class DBVerbindung {
                 descr = tmp.getString("DESCR");
             }
         } catch (SQLException sqle) {
-            System.out.println(sqle.toString());
+            Log.e("SQL failure", sqle.toString());
         }
         return descr;
     }
@@ -100,7 +104,7 @@ public class DBVerbindung {
             }
             time=(String) start.subSequence(11, start.length()-5);//cutting out hours:minutes
         } catch (SQLException sqle) {
-            System.out.println(sqle.toString());
+            Log.e("SQL failure", sqle.toString());
         }
         return time;
     }
@@ -120,7 +124,7 @@ public class DBVerbindung {
             }
             time=end.substring(11, end.length()-5); //cutting out hours:minutes
         } catch (SQLException sqle) {
-            System.out.println(sqle.toString());
+            Log.e("SQL failure", sqle.toString());
         }
         return time;
     }
@@ -138,7 +142,7 @@ public class DBVerbindung {
                 locname = tmp.getString("NAME");
             }
         } catch (SQLException sqle) {
-            System.out.println(sqle.toString());
+            Log.e("SQL failure", sqle.toString());
         }
         return locname;
     }
@@ -156,7 +160,7 @@ public class DBVerbindung {
                 locdescr = tmp.getString("DESCR");
             }
         } catch (SQLException sqle) {
-            System.out.println(sqle.toString());
+            Log.e("SQL failure", sqle.toString());
         }
         return locdescr;
     }
@@ -167,7 +171,7 @@ public class DBVerbindung {
      * @return Location as String in format "<Latitude> <Longitude>".
      * @param eventID ID of the event to get the geolocation for
      */
-    public String getEventGeoLoc(int eventID){
+    public LatLng getEventGeoLoc(int eventID){
         String loc = "50.682774 10.935981"; //Somewhere on the Ehrenbergwiese
         try {
             ResultSet tmp = stmt.executeQuery("SELECT ST_AsText(locations.GEOLOC) FROM events INNER JOIN locations ON events.LOC = locations.ID WHERE events.ID="+eventID); //get the Geolocation as text
@@ -176,9 +180,11 @@ public class DBVerbindung {
             }
             loc=loc.substring(6,loc.length()-1); //cut out the surrounding "POINT(<  >)" to make the String more easily accessible.
         } catch (SQLException sqle) {
-            System.out.println(sqle.toString());
+            Log.e("SQL failure", sqle.toString());
         }
-        return loc;
+        String lat = loc.substring(0, loc.indexOf(" ")-1);
+        String lon = loc.substring(loc.indexOf(" ")+1, loc.length());
+        return new LatLng(Double.valueOf(lat),Double.valueOf(lon));
     }
 
     /*
@@ -202,20 +208,23 @@ public class DBVerbindung {
             }
             String today = y+"-"+m+"-"+d; //Getting the right date format for the database
             ResultSet events = stmt.executeQuery("SELECT * FROM events WHERE START LIKE '"+today+"%'"); //Get all events where the start time lies on that day
+            events.beforeFirst();
             while(events.next()){ //go through all events on that day
                 current.add(events.getInt("ID")); //get all the event IDs into the result set
             }
         }catch(SQLException sqle){
-            System.out.println(sqle.toString());
+            Log.e("SQL failure", sqle.toString());
         }
         return current;
     }
 
+    /*
     public static void main(){
-        DBVerbindung dBVerb1 = new DBVerbindung("tuivents", "root", "M2A2015");
-        dBVerb1.open();
-        dBVerb1.close();
+        //DBVerbindung dBVerb1 = new DBVerbindung("tuivents", "root", "M2A2015");
+        //dBVerb1.open();
+        //dBVerb1.close();
     }
+    */
 }
 
 
