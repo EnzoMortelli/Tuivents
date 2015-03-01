@@ -24,10 +24,14 @@ public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     public Calendar date = new GregorianCalendar(); //initialize Calendar with current date and time. The Calendar object can be used to set dates to search for events on.
+    private String today = "heute "; //variable for specialized output. If no date was chosen, the Alertdialog for the case that no events were found will display that there weren't any events today, otherwise just that there weren't any events.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /*The following two lines are needed for the app to be able to connect to the database on it's main thread
+         *Usually, network stuff can only be done in async threads, which is a bit elaborate, so we do this workaround
+         *Changing this to a threaded thing could make a first proposal for improvements*/
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.activity_maps);
@@ -45,7 +49,7 @@ public class MapsActivity extends FragmentActivity {
      */
     @Override
     public void onBackPressed(){
-        //super.onBackPressed();
+        //Safety Question if the user presses the Backbutton, to prevent accidental closing
         AlertDialog.Builder back = new AlertDialog.Builder(this);
         back.setTitle("Beenden")
             .setMessage("Möchten Sie die App wirklich schließen?")
@@ -56,7 +60,7 @@ public class MapsActivity extends FragmentActivity {
             })
             .setNegativeButton("NEIN", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    // App not yet closed
+                    // App not gonna get closed yet, do nothing.
                 }
             });
         back.show();
@@ -97,15 +101,35 @@ public class MapsActivity extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(50.683032, 10.936282)));
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(15.0f));
-
+        //center the map over the Campus
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(50.683032, 10.936282), 15.0f), 4000, null);
+        //open DB connection
         DBVerbindung db = new DBVerbindung("tuivents", "root", "M2A2015");
         db.open();
+        //get all the events for a given date
         Set<Integer> events = db.getEventsByDate(date.get(Calendar.YEAR), date.get(Calendar.MONTH)+1, date.get(Calendar.DAY_OF_MONTH));
-        for(Integer ID : events){
-            mMap.addMarker(new MarkerOptions().position(db.getEventGeoLoc(ID)).title(db.getEventName(ID)));
+
+        if(events.isEmpty()){ //if no events were found for the given date...
+            AlertDialog.Builder none = new AlertDialog.Builder(this);
+            none.setMessage("Es wurden "+today+"keine Events gefunden.")//...tell the user that there are none
+                    .setPositiveButton("Schade", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            //Do nothing.
+                        }
+                    });
+            none.show(); //This thing is fast, it'll propably show up even before the map is fully loaded.
         }
+        //If we found events - display them on the map
+        for(Integer ID : events){
+            mMap.addMarker(new MarkerOptions().position(db.getEventGeoLoc(ID))
+                                              .title(db.getEventName(ID)));
+        }
+        //If we're done, close the Db connection again.
         db.close();
+    }
+
+    private void changeDate(int year, int month, int day){
+        date.set(year, month-1, day);
+        today = ""; //If the date was changed, we suppose that it's not set to today anymore - even if it still is.
     }
 }
