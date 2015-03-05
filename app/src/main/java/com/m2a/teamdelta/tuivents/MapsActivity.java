@@ -128,8 +128,15 @@ public class MapsActivity extends FragmentActivity {
         db.close();
     }
 
+    //May be used to set the date to look for events on
     private void changeDate(int year, int month, int day){
         date.set(year, month-1, day);
         today = ""; //If the date was changed, we suppose that it's not set to today anymore - even if it still is.
+    }
+
+    //May be used to change the time on a given date
+    private void changeTime(int hour, int minute){
+        date.set(Calendar.HOUR_OF_DAY, hour);
+        date.set(Calendar.MINUTE, minute);
     }
 }
