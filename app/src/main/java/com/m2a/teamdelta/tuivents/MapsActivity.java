@@ -19,12 +19,27 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Set;
 
+import android.support.v7.app.ActionBarActivity;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.PopupWindow;
+
 
 public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     public Calendar date = new GregorianCalendar(); //initialize Calendar with current date and time. The Calendar object can be used to set dates to search for events on.
     private String today = "heute "; //variable for specialized output. If no date was chosen, the Alertdialog for the case that no events were found will display that there weren't any events today, otherwise just that there weren't any events.
+    private String heute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +51,36 @@ public class MapsActivity extends FragmentActivity {
         StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
+
+        final Button btnOpenPopup = (Button)findViewById(R.id.button_datum);
+        heute = Integer.toString(date.get(Calendar.DAY_OF_MONTH))+"."+Integer.toString(date.get(Calendar.MONTH))+"."+Integer.toString(date.get(Calendar.YEAR));
+        btnOpenPopup.setText(heute);
+        btnOpenPopup.setOnClickListener(new Button.OnClickListener(){
+
+            @Override
+            public void onClick(View arg0) {
+                LayoutInflater layoutInflater
+                        = (LayoutInflater)getBaseContext()
+                        .getSystemService(LAYOUT_INFLATER_SERVICE);
+                View popupView = layoutInflater.inflate(R.layout.auswahl_datum, null);
+                final PopupWindow popupWindow = new PopupWindow(
+                        popupView,
+                        LayoutParams.WRAP_CONTENT,
+                        LayoutParams.WRAP_CONTENT);
+
+                final DatePicker dp = (DatePicker) findViewById(R.id.date_picker);
+                Button btnDismiss = (Button)popupView.findViewById(R.id.button_ok);
+                btnDismiss.setOnClickListener(new Button.OnClickListener(){
+
+                    @Override
+                    public void onClick(View v) {
+                        btnOpenPopup.setText(Integer.toString(dp.getDayOfMonth()));
+                        popupWindow.dismiss();
+                    }});
+
+                popupWindow.showAsDropDown(btnOpenPopup, 50, -30);
+
+            }});
     }
 
     @Override

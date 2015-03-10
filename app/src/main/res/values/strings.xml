@@ -3,5 +3,7 @@
 
     <string name="app_name">Tuivents</string>
     <string name="title_activity_maps">Map</string>
+    <string name="button_datum">10.03.2015</string>
+    <string name="select_datum">Bitte Datum auswählen</string>
 
 </resources>

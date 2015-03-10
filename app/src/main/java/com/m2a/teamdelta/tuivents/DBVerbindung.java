@@ -13,7 +13,7 @@ import java.util.Set;
 public class DBVerbindung {
     private final String treiber = "com.mysql.jdbc.Driver";
 
-    private String dBase = "jdbc:mysql://10.0.2.2/";
+    private String dBase = "jdbc:mysql://127.0.0.1/";
     private String benutzer;
     private String passwort;
 
