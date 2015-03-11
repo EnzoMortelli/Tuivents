@@ -33,6 +33,15 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.PopupWindow;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.TextView;
+
 
 public class MapsActivity extends FragmentActivity {
 
@@ -40,6 +49,14 @@ public class MapsActivity extends FragmentActivity {
     public Calendar date = new GregorianCalendar(); //initialize Calendar with current date and time. The Calendar object can be used to set dates to search for events on.
     private String today = "heute "; //variable for specialized output. If no date was chosen, the Alertdialog for the case that no events were found will display that there weren't any events today, otherwise just that there weren't any events.
     private String heute;
+
+    private Button btnChangeDate;
+
+    private int year;
+    private int month;
+    private int day;
+
+    static final int DATE_DIALOG_ID = 999;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,36 +69,72 @@ public class MapsActivity extends FragmentActivity {
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
 
-        final Button btnOpenPopup = (Button)findViewById(R.id.button_datum);
-        heute = Integer.toString(date.get(Calendar.DAY_OF_MONTH))+"."+Integer.toString(date.get(Calendar.MONTH))+"."+Integer.toString(date.get(Calendar.YEAR));
-        btnOpenPopup.setText(heute);
-        btnOpenPopup.setOnClickListener(new Button.OnClickListener(){
+        setCurrentDateOnView();
+        addListenerOnButton();
+
+    }
+
+    // display current date
+    public void setCurrentDateOnView() {
+
+        btnChangeDate = (Button) findViewById(R.id.button_datum);
+
+        final Calendar c = Calendar.getInstance();
+        year = c.get(Calendar.YEAR);
+        month = c.get(Calendar.MONTH);
+        day = c.get(Calendar.DAY_OF_MONTH);
+
+        // set current date into buttonText
+        btnChangeDate.setText(new StringBuilder()
+                // Month is 0 based, just add 1
+                .append(day).append(".").append(month + 1).append(".").append(year).append(" "));
+
+    }
+
+    public void addListenerOnButton() {
+
+        btnChangeDate = (Button) findViewById(R.id.button_datum);
+
+        btnChangeDate.setOnClickListener(new OnClickListener() {
 
             @Override
-            public void onClick(View arg0) {
-                LayoutInflater layoutInflater
-                        = (LayoutInflater)getBaseContext()
-                        .getSystemService(LAYOUT_INFLATER_SERVICE);
-                View popupView = layoutInflater.inflate(R.layout.auswahl_datum, null);
-                final PopupWindow popupWindow = new PopupWindow(
-                        popupView,
-                        LayoutParams.WRAP_CONTENT,
-                        LayoutParams.WRAP_CONTENT);
+            public void onClick(View v) {
 
-                final DatePicker dp = (DatePicker) findViewById(R.id.date_picker);
-                Button btnDismiss = (Button)popupView.findViewById(R.id.button_ok);
-                btnDismiss.setOnClickListener(new Button.OnClickListener(){
+                showDialog(DATE_DIALOG_ID);
 
-                    @Override
-                    public void onClick(View v) {
-                        btnOpenPopup.setText(Integer.toString(dp.getDayOfMonth()));
-                        popupWindow.dismiss();
-                    }});
+            }
 
-                popupWindow.showAsDropDown(btnOpenPopup, 50, -30);
+        });
 
-            }});
     }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case DATE_DIALOG_ID:
+                // set date picker as current date
+                return new DatePickerDialog(this, datePickerListener,
+                        year, month,day);
+        }
+        return null;
+    }
+
+    private DatePickerDialog.OnDateSetListener datePickerListener
+            = new DatePickerDialog.OnDateSetListener() {
+
+        // when dialog box is closed, below method will be called.
+        public void onDateSet(DatePicker view, int selectedYear,
+                              int selectedMonth, int selectedDay) {
+            year = selectedYear;
+            month = selectedMonth;
+            day = selectedDay;
+
+            // set selected date into buttonText
+            btnChangeDate.setText(new StringBuilder()
+                    .append(day).append(".").append(month + 1).append(".").append(year).append(" "));
+
+        }
+    };
 
     @Override
     protected void onResume() {
