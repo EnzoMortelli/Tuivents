@@ -74,7 +74,7 @@ public class MapsActivity extends FragmentActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.activity_maps);
-        setUpMapIfNeeded();
+        //setUpMapIfNeeded();
 
         setCurrentDateOnView();
         addListenerOnButton();
@@ -144,7 +144,6 @@ public class MapsActivity extends FragmentActivity {
 
             // set new date for events
             changeDate(year,month,day);
-
             setUpMap();
 
         }
@@ -213,24 +212,16 @@ public class MapsActivity extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
+        //don't show events of previous dates
+        mMap.clear();
         //center the map over the Campus
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(50.683032, 10.936282), 15.0f), 4000, null);
         //open DB connection
-        DBVerbindung db = new DBVerbindung("tuivents", "root", "M2A2015");
+        DBVerbindung db = new DBVerbindung("intelligentgraphics", "intelligentgraph", "247bcaK9YBnPp4F7");
         db.open();
         //get all the events for a given date
         Set<Integer> events = db.getEventsByDate(date.get(Calendar.YEAR), date.get(Calendar.MONTH)+1, date.get(Calendar.DAY_OF_MONTH));
 
-        if(events.isEmpty()){ //if no events were found for the given date...
-            AlertDialog.Builder none = new AlertDialog.Builder(this);
-            none.setMessage("Es wurden "+today+"keine Events gefunden.")//...tell the user that there are none
-                    .setPositiveButton("Schade", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            //Do nothing.
-                        }
-                    });
-            none.show(); //This thing is fast, it'll propably show up even before the map is fully loaded.
-        }
         //If we found events - display them on the map
         for(Integer ID : events){
             mMap.addMarker(new MarkerOptions().position(db.getEventGeoLoc(ID))
@@ -238,11 +229,22 @@ public class MapsActivity extends FragmentActivity {
         }
         //If we're done, close the Db connection again.
         db.close();
+
+        if(events.isEmpty()){ //if no events were found for the given date...
+            AlertDialog.Builder none = new AlertDialog.Builder(this);
+            none.setMessage("Es wurden "+today+"keine Events gefunden.")//...tell the user that there are none
+                    .setPositiveButton("Schade", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                        }
+                    });
+            none.show(); //This thing is fast, it'll propably show up even before the map is fully loaded.
+        }
     }
 
     //May be used to set the date to look for events on
     private void changeDate(int year, int month, int day){
-        date.set(year, month-1, day);
+        date.set(year, month, day);
         today = ""; //If the date was changed, we suppose that it's not set to today anymore - even if it still is.
     }
 
@@ -275,5 +277,5 @@ public class MapsActivity extends FragmentActivity {
             }
 
         });
-    };
+    }
 }
