@@ -40,6 +40,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 
@@ -56,7 +57,13 @@ public class MapsActivity extends FragmentActivity {
     private int month;
     private int day;
 
+    private int hour;
+    private int minute;
+
     static final int DATE_DIALOG_ID = 999;
+
+    private SeekBar bar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +78,8 @@ public class MapsActivity extends FragmentActivity {
 
         setCurrentDateOnView();
         addListenerOnButton();
+
+        addListenerOnSeekbar();
 
     }
 
@@ -132,6 +141,11 @@ public class MapsActivity extends FragmentActivity {
             // set selected date into buttonText
             btnChangeDate.setText(new StringBuilder()
                     .append(day).append(".").append(month + 1).append(".").append(year).append(" "));
+
+            // set new date for events
+            changeDate(year,month,day);
+
+            setUpMap();
 
         }
     };
@@ -237,4 +251,29 @@ public class MapsActivity extends FragmentActivity {
         date.set(Calendar.HOUR_OF_DAY, hour);
         date.set(Calendar.MINUTE, minute);
     }
+
+    public void addListenerOnSeekbar() {
+
+        bar = (SeekBar)findViewById(R.id.seekBar);
+
+        bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                hour = progress/60;
+                minute = progress%60;
+                changeTime(hour, minute);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                seekBar.setSecondaryProgress(seekBar.getProgress()); // set the shade of the previous value.
+            }
+
+        });
+    };
 }

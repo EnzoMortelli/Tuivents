@@ -19,4 +19,19 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         tools:layout="@layout/abc_screen_simple"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom">
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:max="1439"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"/>
+
+
+    </LinearLayout>
+
 </LinearLayout>
