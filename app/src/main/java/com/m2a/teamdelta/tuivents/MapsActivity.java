@@ -74,7 +74,7 @@ public class MapsActivity extends FragmentActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.activity_maps);
-        //setUpMapIfNeeded();
+        setUpMapIfNeeded();
 
         setCurrentDateOnView();
         addListenerOnButton();
@@ -134,17 +134,21 @@ public class MapsActivity extends FragmentActivity {
         // when dialog box is closed, below method will be called.
         public void onDateSet(DatePicker view, int selectedYear,
                               int selectedMonth, int selectedDay) {
-            year = selectedYear;
-            month = selectedMonth;
-            day = selectedDay;
 
-            // set selected date into buttonText
-            btnChangeDate.setText(new StringBuilder()
-                    .append(day).append(".").append(month + 1).append(".").append(year).append(" "));
+            if (view.isShown()) {
 
-            // set new date for events
-            changeDate(year,month,day);
-            setUpMap();
+                year = selectedYear;
+                month = selectedMonth;
+                day = selectedDay;
+
+                // set selected date into buttonText
+                btnChangeDate.setText(new StringBuilder()
+                        .append(day).append(".").append(month + 1).append(".").append(year).append(" "));
+
+                // set new date for events
+                changeDate(year, month, day);
+                setUpMap();
+            }
 
         }
     };
