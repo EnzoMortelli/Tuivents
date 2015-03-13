@@ -11,27 +11,29 @@
         android:layout_height="wrap_content"
         android:text="@string/button_datum"/>
 
-    <fragment
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/map"
-        tools:context=".MapsActivity"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        tools:layout="@layout/abc_screen_simple"/>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="bottom">
+        android:layout_height="match_parent">
+
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/map"
+            tools:context=".MapsActivity"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            tools:layout="@layout/abc_screen_simple"
+            android:layout_above="@+id/seekBar"/>
+
 
         <SeekBar
             android:id="@+id/seekBar"
             android:max="1439"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"/>
+            android:layout_alignParentBottom="true"/>
 
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>
