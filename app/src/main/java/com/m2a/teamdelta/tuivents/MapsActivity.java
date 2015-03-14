@@ -11,12 +11,15 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.Set;
 
 import android.support.v7.app.ActionBarActivity;
@@ -63,6 +66,9 @@ public class MapsActivity extends FragmentActivity {
     static final int DATE_DIALOG_ID = 999;
 
     private SeekBar bar;
+
+    private Set<Integer> eventIDs;
+    private Set<Event> events = new HashSet<Event>();
 
 
     @Override
@@ -218,23 +224,16 @@ public class MapsActivity extends FragmentActivity {
     private void setUpMap() {
         //don't show events of previous dates
         mMap.clear();
+        events.clear();
         //center the map over the Campus
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(50.683032, 10.936282), 15.0f), 4000, null);
         //open DB connection
         DBVerbindung db = new DBVerbindung("intelligentgraphics", "intelligentgraph", "247bcaK9YBnPp4F7");
         db.open();
         //get all the events for a given date
-        Set<Integer> events = db.getEventsByDate(date.get(Calendar.YEAR), date.get(Calendar.MONTH)+1, date.get(Calendar.DAY_OF_MONTH));
+        eventIDs = db.getEventsByDate(date.get(Calendar.YEAR), date.get(Calendar.MONTH)+1, date.get(Calendar.DAY_OF_MONTH));
 
-        //If we found events - display them on the map
-        for(Integer ID : events){
-            mMap.addMarker(new MarkerOptions().position(db.getEventGeoLoc(ID))
-                                              .title(db.getEventName(ID)));
-        }
-        //If we're done, close the Db connection again.
-        db.close();
-
-        if(events.isEmpty()){ //if no events were found for the given date...
+        if(eventIDs.isEmpty()){ //if no events were found for the given date...
             AlertDialog.Builder none = new AlertDialog.Builder(this);
             none.setMessage("Es wurden "+today+"keine Events gefunden.")//...tell the user that there are none
                     .setPositiveButton("Schade", new DialogInterface.OnClickListener() {
@@ -242,8 +241,24 @@ public class MapsActivity extends FragmentActivity {
                             dialog.dismiss();
                         }
                     });
-            none.show(); //This thing is fast, it'll propably show up even before the map is fully loaded.
+            none.show();//This thing is fast, it'll propably show up even before the map is fully loaded.
+            db.close();
+            return;
         }
+        //If we found events - display them on the map
+        for(Integer ID : eventIDs){
+            events.add(new Event(ID, mMap.addMarker(new MarkerOptions()
+                                    .position(db.getEventGeoLoc(ID))
+                                    .title(db.getEventName(ID))
+                                    .snippet(db.getEventStart(ID) + " - " + db.getEventEnd(ID))
+                                    .alpha(0.5f)
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                                     )
+                       )
+            );
+        }
+        //If we're done, close the Db connection again.
+        db.close();
     }
 
     //May be used to set the date to look for events on
@@ -281,5 +296,23 @@ public class MapsActivity extends FragmentActivity {
             }
 
         });
+    }
+}
+
+class Event{
+    protected int ID;
+    protected Marker marker;
+
+    public Event(int ID, Marker marker){
+        this.ID = ID;
+        this.marker = marker;
+    }
+
+    public int getID(Event event){
+        return ID;
+    }
+
+    public Marker getMarker(Event event){
+        return marker;
     }
 }
