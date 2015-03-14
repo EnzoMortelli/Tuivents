@@ -276,6 +276,7 @@ public class MapsActivity extends FragmentActivity {
     public void addListenerOnSeekbar() {
 
         bar = (SeekBar)findViewById(R.id.seekBar);
+        bar.setMax(1439);
 
         bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
