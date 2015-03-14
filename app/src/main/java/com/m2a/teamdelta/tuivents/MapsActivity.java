@@ -245,7 +245,8 @@ public class MapsActivity extends FragmentActivity {
             db.close();
             return;
         }
-        //If we found events - display them on the map
+        //If we found events - add them to the events list and display them
+        String start;
         for(Integer ID : eventIDs){
             events.add(new Event(ID, mMap.addMarker(new MarkerOptions()
                                     .position(db.getEventGeoLoc(ID))
@@ -254,6 +255,13 @@ public class MapsActivity extends FragmentActivity {
                                     .alpha(0.5f)
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                                      )
+                            , Integer.valueOf(db.getEventStart(ID).substring(0, 2))
+                            , Integer.valueOf(db.getEventStart(ID).substring(3))
+                            , Integer.valueOf(db.getEventEnd(ID).substring(0, 2))
+                            , Integer.valueOf(db.getEventEnd(ID).substring(3))
+                            , db.getEventLocName(ID)
+                            , db.getEventDescr(ID)
+                            , db.getEventLocDescr(ID)
                        )
             );
         }
@@ -276,7 +284,6 @@ public class MapsActivity extends FragmentActivity {
     public void addListenerOnSeekbar() {
 
         bar = (SeekBar)findViewById(R.id.seekBar);
-        bar.setMax(1439);
 
         bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -303,10 +310,25 @@ public class MapsActivity extends FragmentActivity {
 class Event{
     protected int ID;
     protected Marker marker;
+    protected int starthour;
+    protected int startminute;
+    protected int endhour;
+    protected int endminute;
+    protected String location;
+    protected String descr;
+    protected String locdescr;
 
-    public Event(int ID, Marker marker){
+
+    public Event(int ID, Marker marker, int shour, int smin, int endh, int endm, String location, String descr, String locdescr ){
         this.ID = ID;
         this.marker = marker;
+        this.starthour = shour;
+        this.startminute = smin;
+        this.endhour = endh;
+        this.endminute = endm;
+        this.location = location;
+        this.descr = descr;
+        this.locdescr = locdescr;
     }
 
     public int getID(Event event){
@@ -315,5 +337,25 @@ class Event{
 
     public Marker getMarker(Event event){
         return marker;
+    }
+
+    public int getStarthour(Event event) { return starthour; }
+
+    public int getStartminute(Event event) { return startminute; }
+
+    public int getEndhour(Event event) { return endhour; }
+
+    public int getEndminute(Event event) { return endminute; }
+
+    public String getLocation(Event event) {
+        return location;
+    }
+
+    public String getDescr(Event event) {
+        return descr;
+    }
+
+    public String getLocdescr(Event event) {
+        return locdescr;
     }
 }
