@@ -284,6 +284,7 @@ public class MapsActivity extends FragmentActivity {
     public void addListenerOnSeekbar() {
 
         bar = (SeekBar)findViewById(R.id.seekBar);
+        bar.setProgress(date.get(Calendar.HOUR_OF_DAY)*60+date.get(Calendar.MINUTE));
 
         bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
