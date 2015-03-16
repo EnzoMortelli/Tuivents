@@ -251,7 +251,7 @@ public class MapsActivity extends FragmentActivity {
             events.add(new Event(ID, mMap.addMarker(new MarkerOptions()
                                     .position(db.getEventGeoLoc(ID))
                                     .title(db.getEventName(ID))
-                                    .snippet(db.getEventStart(ID) + " - " + db.getEventEnd(ID))
+                                    .snippet(db.getEventLocName(ID)+" | "+db.getEventStart(ID) + " - " + db.getEventEnd(ID))
                                     .alpha(0.5f)
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                                      )
@@ -290,7 +290,25 @@ public class MapsActivity extends FragmentActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 hour = progress/60;
                 minute = progress%60;
-                changeTime(hour, minute);
+                for(Event active : events){
+                    if((hour > active.starthour || ( hour == active.starthour && minute >= active.startminute))&&(hour < active.endhour || (hour == active.endhour && minute < active.endhour))){
+                        if(!active.active){
+                            active.active=true;
+                            active.marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+                            active.marker.setAlpha(1.0f);
+                            active.marker.showInfoWindow();
+                        }
+
+                    }else{
+                        if(active.active){
+                            active.active=false;
+                            active.marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                            active.marker.setAlpha(0.5f);
+                            active.marker.hideInfoWindow();
+                        }
+
+                    }
+                }
             }
 
             @Override
@@ -317,6 +335,7 @@ class Event{
     protected String location;
     protected String descr;
     protected String locdescr;
+    protected boolean active;
 
 
     public Event(int ID, Marker marker, int shour, int smin, int endh, int endm, String location, String descr, String locdescr ){
@@ -329,17 +348,18 @@ class Event{
         this.location = location;
         this.descr = descr;
         this.locdescr = locdescr;
+        this.active = false;
     }
 
     public int getID(Event event){
         return ID;
     }
 
-    public Marker getMarker(Event event){
+    public Marker getMarker(){
         return marker;
     }
 
-    public int getStarthour(Event event) { return starthour; }
+    public int getStarthour() { return starthour; }
 
     public int getStartminute(Event event) { return startminute; }
 
