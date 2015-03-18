@@ -87,6 +87,8 @@ public class MapsActivity extends FragmentActivity {
 
         addListenerOnSeekbar();
 
+        addListenerOnMap();
+
     }
 
     // display current date
@@ -158,6 +160,60 @@ public class MapsActivity extends FragmentActivity {
 
         }
     };
+
+    public void addListenerOnMap() {
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                Event e = null;
+                for (Event markergesucht : events){
+                    if(marker == markergesucht.marker){
+                        e = markergesucht;
+                    }
+                }
+                setContentView(R.layout.event_info);
+                felderFuellen(e, marker);
+                return false;
+            }
+        });
+    }
+
+    public void felderFuellen(Event e, Marker m){
+        TextView name = (TextView) findViewById(R.id.e_name);
+        TextView location = (TextView) findViewById(R.id.e_location);
+        TextView start= (TextView) findViewById(R.id.e_start);
+        TextView end = (TextView) findViewById(R.id.e_end);
+        TextView descr = (TextView) findViewById(R.id.e_description);
+
+        String sz;
+        String ez;
+
+        if(e.getStarthour()<10){
+            if(e.getStartminute(e)<10){
+                sz = "0"+e.getStarthour()+":0"+e.getStartminute(e);
+            } else {
+                sz = "0"+e.getStarthour()+":"+e.getStartminute(e);
+            };
+        } else {
+            sz = ""+e.getStarthour()+":"+e.getStartminute(e);
+        };
+
+        if(e.getEndhour(e)<10){
+            if(e.getEndminute(e)<10){
+                sz = "0"+e.getEndhour(e)+":0"+e.getEndminute(e);
+            } else {
+                sz = "0"+e.getEndhour(e)+":"+e.getEndminute(e);
+            };
+        } else {
+            sz = ""+e.getEndhour(e)+":"+e.getEndminute(e);
+        };
+
+        name.setText(m.getTitle());
+        location.setText(e.getLocdescr(e));
+        start.setText(e.getStarthour()+":"+e.getStartminute(e));
+        end.setText(e.getEndhour(e)+":"+e.getEndminute(e));
+        descr.setText(e.getDescr(e));
+    }
 
     @Override
     protected void onResume() {
