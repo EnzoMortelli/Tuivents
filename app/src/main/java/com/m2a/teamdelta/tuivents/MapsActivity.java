@@ -165,9 +165,9 @@ public class MapsActivity extends FragmentActivity {
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                Event e = null;
+                Event e = new Event();
                 for (Event markergesucht : events){
-                    if(marker == markergesucht.marker){
+                    if(marker.equals(markergesucht.marker)){
                         e = markergesucht;
                     }
                 }
@@ -195,23 +195,31 @@ public class MapsActivity extends FragmentActivity {
                 sz = "0"+e.getStarthour()+":"+e.getStartminute(e);
             };
         } else {
-            sz = ""+e.getStarthour()+":"+e.getStartminute(e);
+            if(e.getStartminute(e)<10){
+                sz = e.getStarthour()+":0"+e.getStartminute(e);
+            } else {
+                sz = e.getStarthour()+":"+e.getStartminute(e);
+            };
         };
 
         if(e.getEndhour(e)<10){
             if(e.getEndminute(e)<10){
-                sz = "0"+e.getEndhour(e)+":0"+e.getEndminute(e);
+                ez = "0"+e.getEndhour(e)+":0"+e.getEndminute(e);
             } else {
-                sz = "0"+e.getEndhour(e)+":"+e.getEndminute(e);
+                ez = "0"+e.getEndhour(e)+":"+e.getEndminute(e);
             };
         } else {
-            sz = ""+e.getEndhour(e)+":"+e.getEndminute(e);
+            if(e.getEndminute(e)<10){
+                ez = e.getEndhour(e)+":0"+e.getEndminute(e);
+            } else {
+                ez = e.getEndhour(e)+":"+e.getEndminute(e);
+            };
         };
 
         name.setText(m.getTitle());
         location.setText(e.getLocdescr(e));
-        start.setText(e.getStarthour()+":"+e.getStartminute(e));
-        end.setText(e.getEndhour(e)+":"+e.getEndminute(e));
+        start.setText(sz);
+        end.setText(ez);
         descr.setText(e.getDescr(e));
     }
 
@@ -383,17 +391,20 @@ public class MapsActivity extends FragmentActivity {
 }
 
 class Event{
-    protected int ID;
-    protected Marker marker;
-    protected int starthour;
-    protected int startminute;
-    protected int endhour;
-    protected int endminute;
-    protected String location;
-    protected String descr;
-    protected String locdescr;
-    protected boolean active;
+    public int ID;
+    public Marker marker;
+    public int starthour;
+    public int startminute;
+    public int endhour;
+    public int endminute;
+    public String location;
+    public String descr;
+    public String locdescr;
+    public boolean active;
 
+    public Event(){
+
+    }
 
     public Event(int ID, Marker marker, int shour, int smin, int endh, int endm, String location, String descr, String locdescr ){
         this.ID = ID;
