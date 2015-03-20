@@ -35,7 +35,6 @@ public class MapsActivity extends FragmentActivity {
     private String today = "heute "; //variable for specialized output. If no date was chosen, the Alertdialog for the case that no events were found will display that there weren't any events today, otherwise just that there weren't any events.
 
     private Button btnChangeDate;
-
     private int year;
     private int month;
     private int day;
@@ -336,15 +335,26 @@ public class MapsActivity extends FragmentActivity {
     public void addListenerOnSeekbar() {
 
         SeekBar bar = (SeekBar) findViewById(R.id.seekBar);
+        final TextView timeDisplay = (TextView) findViewById(R.id.timeDisplay);
         bar.setProgress(date.get(Calendar.HOUR_OF_DAY) * 60 + date.get(Calendar.MINUTE));
+        String zeroh="";
+        String zerom="";
+        if (date.get(Calendar.HOUR_OF_DAY)<10) zeroh="0";
+        if (date.get(Calendar.MINUTE)<10) zerom="0";
+        timeDisplay.setText(zeroh+date.get(Calendar.HOUR_OF_DAY)+":"+zerom+date.get(Calendar.MINUTE));
 
         bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 hour = progress / 60;
                 minute = progress % 60;
+                String zeroh="";
+                String zerom="";
+                if (hour<10) zeroh="0";
+                if (minute<10) zerom="0";
+                timeDisplay.setText(zeroh+hour+":"+zerom+minute);
                 for (Event active : events) {
-                    if ((hour > active.starthour || (hour == active.starthour && minute >= active.startminute)) && (hour < active.endhour || (hour == active.endhour && minute < active.endhour))) {
+                    if ((hour > active.starthour || (hour == active.starthour && minute >= active.startminute)) && (hour < active.endhour || (hour == active.endhour && minute < active.endminute))) {
                         if (!active.active) {
                             active.active = true;
                             active.marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));

@@ -33,6 +33,15 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00"
+            android:id="@+id/timeDisplay"
+            android:layout_above="@+id/seekBar"
+            android:layout_centerHorizontal="true"
+            android:textSize="25dp" />
+
 
     </RelativeLayout>
 
