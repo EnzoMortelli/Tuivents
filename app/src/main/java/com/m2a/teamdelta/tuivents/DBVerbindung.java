@@ -49,6 +49,9 @@ public class DBVerbindung {
         }
         catch (SQLException sqle){
             Log.e("SQL failure", sqle.toString());
+        }catch(NullPointerException eee){
+            Log.e("Connection Problem", eee.toString());
+            MapsActivity.connection=false;
         }
     }
 
