@@ -7,9 +7,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.sql.*;
 import java.util.HashSet;
 import java.util.Set;
-/**
- * Created by EnzoMortelli on 20.01.2015.
- */
+
 public class DBVerbindung {
     private final String treiber = "com.mysql.jdbc.Driver";
 
@@ -41,6 +39,7 @@ public class DBVerbindung {
         catch (SQLException sqle){
             Log.e("SQL failure", sqle.toString());
         }
+
     }
 
     public void close(){
@@ -195,7 +194,7 @@ public class DBVerbindung {
      * @param day The Day of the date where we want to find events
      */
     public Set<Integer> getEventsByDate(int year, int month, int day){
-        Set<Integer> current = new HashSet<Integer>(); //initialize result set
+        Set<Integer> current = new HashSet<>(); //initialize result set
         try{
             String y = Integer.toString(year); //Getting the params in a string representation
             String m = Integer.toString(month);//That's needed to compare them to strings in the database
@@ -214,17 +213,12 @@ public class DBVerbindung {
             }
         }catch(SQLException sqle){
             Log.e("SQL failure", sqle.toString());
+        }catch(NullPointerException eee){
+            Log.e("Connection Problem", eee.toString());
+            MapsActivity.connection=false;
         }
         return current;
     }
-
-    /*
-    public static void main(){
-        //DBVerbindung dBVerb1 = new DBVerbindung("tuivents", "root", "M2A2015");
-        //dBVerb1.open();
-        //dBVerb1.close();
-    }
-    */
 }
 
 

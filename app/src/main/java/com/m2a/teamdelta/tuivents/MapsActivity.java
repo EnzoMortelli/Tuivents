@@ -1,18 +1,23 @@
 package com.m2a.teamdelta.tuivents;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
-import android.content.DialogInterface;
-import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -22,37 +27,12 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
 
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-
-import android.app.Activity;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.PopupWindow;
-
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.SeekBar;
-import android.widget.TextView;
-
 
 public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     public Calendar date = new GregorianCalendar(); //initialize Calendar with current date and time. The Calendar object can be used to set dates to search for events on.
     private String today = "heute "; //variable for specialized output. If no date was chosen, the Alertdialog for the case that no events were found will display that there weren't any events today, otherwise just that there weren't any events.
-    private String heute;
 
     private Button btnChangeDate;
 
@@ -65,11 +45,9 @@ public class MapsActivity extends FragmentActivity {
 
     static final int DATE_DIALOG_ID = 999;
 
-    private SeekBar bar;
+    private Set<Event> events = new HashSet<>();
 
-    private Set<Integer> eventIDs;
-    private Set<Event> events = new HashSet<Event>();
-
+    public static boolean connection=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +92,7 @@ public class MapsActivity extends FragmentActivity {
 
         btnChangeDate.setOnClickListener(new OnClickListener() {
 
+            @SuppressWarnings("deprecation")
             @Override
             public void onClick(View v) {
 
@@ -125,6 +104,7 @@ public class MapsActivity extends FragmentActivity {
 
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
@@ -189,38 +169,38 @@ public class MapsActivity extends FragmentActivity {
         String ez;
 
         if(e.getStarthour()<10){
-            if(e.getStartminute(e)<10){
-                sz = "0"+e.getStarthour()+":0"+e.getStartminute(e);
+            if(e.getStartminute()<10){
+                sz = "0"+e.getStarthour()+":0"+e.getStartminute();
             } else {
-                sz = "0"+e.getStarthour()+":"+e.getStartminute(e);
-            };
+                sz = "0"+e.getStarthour()+":"+e.getStartminute();
+            }
         } else {
-            if(e.getStartminute(e)<10){
-                sz = e.getStarthour()+":0"+e.getStartminute(e);
+            if(e.getStartminute()<10){
+                sz = e.getStarthour()+":0"+e.getStartminute();
             } else {
-                sz = e.getStarthour()+":"+e.getStartminute(e);
-            };
-        };
+                sz = e.getStarthour()+":"+e.getStartminute();
+            }
+        }
 
-        if(e.getEndhour(e)<10){
-            if(e.getEndminute(e)<10){
-                ez = "0"+e.getEndhour(e)+":0"+e.getEndminute(e);
+        if(e.getEndhour()<10){
+            if(e.getEndminute()<10){
+                ez = "0"+e.getEndhour()+":0"+e.getEndminute();
             } else {
-                ez = "0"+e.getEndhour(e)+":"+e.getEndminute(e);
-            };
+                ez = "0"+e.getEndhour()+":"+e.getEndminute();
+            }
         } else {
-            if(e.getEndminute(e)<10){
-                ez = e.getEndhour(e)+":0"+e.getEndminute(e);
+            if(e.getEndminute()<10){
+                ez = e.getEndhour()+":0"+e.getEndminute();
             } else {
-                ez = e.getEndhour(e)+":"+e.getEndminute(e);
-            };
-        };
+                ez = e.getEndhour()+":"+e.getEndminute();
+            }
+        }
 
         name.setText(m.getTitle());
-        location.setText(e.getLocdescr(e));
+        location.setText(e.getLocdescr());
         start.setText(sz);
         end.setText(ez);
-        descr.setText(e.getDescr(e));
+        descr.setText(e.getDescr());
     }
 
     @Override
@@ -245,7 +225,7 @@ public class MapsActivity extends FragmentActivity {
             })
             .setNegativeButton("NEIN", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    // App not gonna get closed yet, do nothing.
+                    dialog.dismiss();// App not gonna get closed yet, do nothing.
                 }
             });
         back.show();
@@ -295,7 +275,22 @@ public class MapsActivity extends FragmentActivity {
         DBVerbindung db = new DBVerbindung("intelligentgraphics", "intelligentgraph", "247bcaK9YBnPp4F7");
         db.open();
         //get all the events for a given date
-        eventIDs = db.getEventsByDate(date.get(Calendar.YEAR), date.get(Calendar.MONTH)+1, date.get(Calendar.DAY_OF_MONTH));
+        Set<Integer> eventIDs = db.getEventsByDate(date.get(Calendar.YEAR), date.get(Calendar.MONTH) + 1, date.get(Calendar.DAY_OF_MONTH));
+
+        if(!connection){
+            AlertDialog.Builder fail = new AlertDialog.Builder(this);
+            fail.setTitle("Verbindung fehlgeschlagen");
+            fail.setMessage("Es kann keine Verbindung zum Server aufgebaut werden. Bitte überprüfen Sie Ihre Internetverbindung.")//...tell the user that there are none
+                    .setPositiveButton("Beenden", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                            finish();
+                        }
+                    });
+            fail.show();
+            db.close();
+            return;
+        }
 
         if(eventIDs.isEmpty()){ //if no events were found for the given date...
             AlertDialog.Builder none = new AlertDialog.Builder(this);
@@ -310,7 +305,6 @@ public class MapsActivity extends FragmentActivity {
             return;
         }
         //If we found events - add them to the events list and display them
-        String start;
         for(Integer ID : eventIDs){
             events.add(new Event(ID, mMap.addMarker(new MarkerOptions()
                                     .position(db.getEventGeoLoc(ID))
@@ -339,34 +333,28 @@ public class MapsActivity extends FragmentActivity {
         today = ""; //If the date was changed, we suppose that it's not set to today anymore - even if it still is.
     }
 
-    //May be used to change the time on a given date
-    private void changeTime(int hour, int minute){
-        date.set(Calendar.HOUR_OF_DAY, hour);
-        date.set(Calendar.MINUTE, minute);
-    }
-
     public void addListenerOnSeekbar() {
 
-        bar = (SeekBar)findViewById(R.id.seekBar);
-        bar.setProgress(date.get(Calendar.HOUR_OF_DAY)*60+date.get(Calendar.MINUTE));
+        SeekBar bar = (SeekBar) findViewById(R.id.seekBar);
+        bar.setProgress(date.get(Calendar.HOUR_OF_DAY) * 60 + date.get(Calendar.MINUTE));
 
         bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                hour = progress/60;
-                minute = progress%60;
-                for(Event active : events){
-                    if((hour > active.starthour || ( hour == active.starthour && minute >= active.startminute))&&(hour < active.endhour || (hour == active.endhour && minute < active.endhour))){
-                        if(!active.active){
-                            active.active=true;
+                hour = progress / 60;
+                minute = progress % 60;
+                for (Event active : events) {
+                    if ((hour > active.starthour || (hour == active.starthour && minute >= active.startminute)) && (hour < active.endhour || (hour == active.endhour && minute < active.endhour))) {
+                        if (!active.active) {
+                            active.active = true;
                             active.marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
                             active.marker.setAlpha(1.0f);
                             active.marker.showInfoWindow();
                         }
 
-                    }else{
-                        if(active.active){
-                            active.active=false;
+                    } else {
+                        if (active.active) {
+                            active.active = false;
                             active.marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
                             active.marker.setAlpha(0.5f);
                             active.marker.hideInfoWindow();
@@ -419,7 +407,7 @@ class Event{
         this.active = false;
     }
 
-    public int getID(Event event){
+    public int getID(){
         return ID;
     }
 
@@ -429,21 +417,21 @@ class Event{
 
     public int getStarthour() { return starthour; }
 
-    public int getStartminute(Event event) { return startminute; }
+    public int getStartminute() { return startminute; }
 
-    public int getEndhour(Event event) { return endhour; }
+    public int getEndhour() { return endhour; }
 
-    public int getEndminute(Event event) { return endminute; }
+    public int getEndminute() { return endminute; }
 
-    public String getLocation(Event event) {
+    public String getLocation() {
         return location;
     }
 
-    public String getDescr(Event event) {
+    public String getDescr() {
         return descr;
     }
 
-    public String getLocdescr(Event event) {
+    public String getLocdescr() {
         return locdescr;
     }
 }
