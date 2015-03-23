@@ -152,7 +152,18 @@ public class MapsActivity extends FragmentActivity {
                 }
                 setContentView(R.layout.event_info);
                 felderFuellen(e, marker);
+                addListenerOnArrow();
                 return false;
+            }
+        });
+    }
+
+    public void addListenerOnArrow() {
+        Button btnArrow = (Button) findViewById(R.id.arrow);
+        btnArrow.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_maps);
             }
         });
     }
@@ -341,7 +352,7 @@ public class MapsActivity extends FragmentActivity {
         String zerom="";
         if (date.get(Calendar.HOUR_OF_DAY)<10) zeroh="0";
         if (date.get(Calendar.MINUTE)<10) zerom="0";
-        timeDisplay.setText(zeroh+date.get(Calendar.HOUR_OF_DAY)+":"+zerom+date.get(Calendar.MINUTE));
+        timeDisplay.setText(zeroh + date.get(Calendar.HOUR_OF_DAY) + ":" + zerom + date.get(Calendar.MINUTE));
 
         bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
