@@ -40,6 +40,7 @@ public class MapsActivity extends FragmentActivity {
     private int year;
     private int month;
     private int day;
+    private ViewFlipper viewFlipper;
 
     private int hour;
     private int minute;
@@ -59,9 +60,9 @@ public class MapsActivity extends FragmentActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        ViewFlipper viewFlipper = (ViewFlipper) findViewById(R.id.main_screen);
+        viewFlipper = (ViewFlipper) findViewById(R.id.main_screen);
 
-        setContentView(R.layout.activity_maps);
+        viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.activity_maps)));
         setUpMapIfNeeded();
 
         setCurrentDateOnView();
@@ -168,7 +169,7 @@ public class MapsActivity extends FragmentActivity {
         btnArrow.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                setContentView(R.layout.activity_maps);
+                viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.event_info)));
             }
         });
     }
