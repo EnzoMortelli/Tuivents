@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
@@ -163,7 +164,7 @@ public class MapsActivity extends FragmentActivity {
     }
 
     public void addListenerOnArrow() {
-        Button btnArrow = (Button) findViewById(R.id.arrow);
+        ImageButton btnArrow = (ImageButton) findViewById(R.id.arrow);
         btnArrow.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
