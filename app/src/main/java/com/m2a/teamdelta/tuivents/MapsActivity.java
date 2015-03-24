@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -56,6 +57,9 @@ public class MapsActivity extends FragmentActivity {
          *Changing this to a threaded thing could make a first proposal for improvements*/
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+
+        ViewFlipper viewFlipper = (ViewFlipper) findViewById(R.id.main_screen);
+
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
 

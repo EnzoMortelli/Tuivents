@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ViewFlipper
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/activity_maps"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/button_datum"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/button_datum"/>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <fragment
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/map"
+                    tools:context=".MapsActivity"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    tools:layout="@layout/abc_screen_simple"
+                    android:layout_above="@+id/seekBar"/>
+
+
+                <SeekBar
+                    android:id="@+id/seekBar"
+                    android:max="1439"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:id="@+id/timeDisplay"
+                    android:layout_above="@+id/seekBar"
+                    android:layout_centerHorizontal="true"
+                    android:textSize="25dp" />
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/event_info"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/arrow"/>
+
+            <TextView
+                android:id="@+id/e_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/arrow"
+                android:text="Beispiel"
+                android:textSize="40dp"/>
+
+            <TextView
+                android:id="@+id/a"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/e_name"
+                android:textSize="30dp"/>
+
+            <TextView
+                android:id="@+id/e_loc"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/a"
+                android:textSize="20dp"
+                android:text="Ort:"/>
+
+            <TextView
+                android:id="@+id/e_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/a"
+                android:layout_toRightOf="@+id/e_loc"
+                android:textSize="20dp"/>
+
+            <TextView
+                android:id="@+id/b"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/e_location"
+                android:textSize="20dp"/>
+
+            <TextView
+                android:id="@+id/e_sta"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/b"
+                android:textSize="20dp"
+                android:text="Start:"/>
+
+            <TextView
+                android:id="@+id/e_start"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/b"
+                android:layout_toRightOf="@+id/e_sta"
+                android:textSize="20dp"/>
+
+            <TextView
+                android:id="@+id/c"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/e_start"
+                android:textSize="20dp"/>
+
+            <TextView
+                android:id="@+id/e_e"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/c"
+                android:textSize="20dp"
+                android:text="Ende:"/>
+
+            <TextView
+                android:id="@+id/e_end"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/c"
+                android:layout_toRightOf="@+id/e_e"
+                android:textSize="20dp"/>
+
+            <TextView
+                android:id="@+id/d"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/e_end"
+                android:textSize="20dp"/>
+
+            <TextView
+                android:id="@+id/e_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/d"
+                android:textSize="20dp"/>
+
+
+        </RelativeLayout>
+
+    </ViewFlipper>
+
+</LinearLayout>
