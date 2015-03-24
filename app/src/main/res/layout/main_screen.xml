@@ -50,7 +50,7 @@
                     android:id="@+id/timeDisplay"
                     android:layout_above="@+id/seekBar"
                     android:layout_centerHorizontal="true"
-                    android:textSize="25dp" />
+                    android:textSize="25sp" />
 
 
             </RelativeLayout>
@@ -75,21 +75,21 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/arrow"
                 android:text="Beispiel"
-                android:textSize="40dp"/>
+                android:textSize="40sp"/>
 
             <TextView
                 android:id="@+id/a"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/e_name"
-                android:textSize="30dp"/>
+                android:textSize="30sp"/>
 
             <TextView
                 android:id="@+id/e_loc"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/a"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:text="Ort:"/>
 
             <TextView
@@ -98,21 +98,21 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/a"
                 android:layout_toRightOf="@+id/e_loc"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
 
             <TextView
                 android:id="@+id/b"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/e_location"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
 
             <TextView
                 android:id="@+id/e_sta"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/b"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:text="Start:"/>
 
             <TextView
@@ -121,21 +121,21 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/b"
                 android:layout_toRightOf="@+id/e_sta"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
 
             <TextView
                 android:id="@+id/c"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/e_start"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
 
             <TextView
                 android:id="@+id/e_e"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/c"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:text="Ende:"/>
 
             <TextView
@@ -144,21 +144,21 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/c"
                 android:layout_toRightOf="@+id/e_e"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
 
             <TextView
                 android:id="@+id/d"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/e_end"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
 
             <TextView
                 android:id="@+id/e_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/d"
-                android:textSize="20dp"/>
+                android:textSize="20sp"/>
 
 
         </RelativeLayout>

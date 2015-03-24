@@ -59,7 +59,7 @@ public class MapsActivity extends FragmentActivity {
          *Changing this to a threaded thing could make a first proposal for improvements*/
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-
+        setContentView(R.layout.main_screen);
         viewFlipper = (ViewFlipper) findViewById(R.id.main_screen);
 
         viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.activity_maps)));
@@ -169,7 +169,7 @@ public class MapsActivity extends FragmentActivity {
         btnArrow.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.event_info)));
+                viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.activity_maps)));
             }
         });
     }
@@ -374,6 +374,7 @@ public class MapsActivity extends FragmentActivity {
                     if ((hour > active.starthour || (hour == active.starthour && minute >= active.startminute)) && (hour < active.endhour || (hour == active.endhour && minute < active.endminute))) {
                         if (!active.active) {
                             active.active = true;
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(active.marker.getPosition(), 15.0f), 4000, null);
                             active.marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
                             active.marker.setAlpha(1.0f);
                             active.marker.showInfoWindow();
