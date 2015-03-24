@@ -60,7 +60,7 @@ public class MapsActivity extends FragmentActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.main_screen);
-        viewFlipper = (ViewFlipper) findViewById(R.id.main_screen);
+        viewFlipper = (ViewFlipper) findViewById(R.id.viewflipper);
 
         viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.activity_maps)));
         setUpMapIfNeeded();
@@ -156,7 +156,8 @@ public class MapsActivity extends FragmentActivity {
                         e = markergesucht;
                     }
                 }
-                setContentView(R.layout.event_info);
+                viewFlipper.showNext();
+                //setContentView(R.layout.event_info);
                 felderFuellen(e, marker);
                 addListenerOnArrow();
                 return false;
@@ -169,7 +170,8 @@ public class MapsActivity extends FragmentActivity {
         btnArrow.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.activity_maps)));
+                viewFlipper.showPrevious();
+                //viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.activity_maps)));
             }
         });
     }
